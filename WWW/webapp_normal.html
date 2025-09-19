@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html ng-app='webApp' lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+    
+    <!--
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="./style_questionare.js"></script>
+    <script type="text/javascript" src="./libs/underscore.min.js"></script>
+    -->
+    
+    <script type="text/javascript">
+    var app = angular.module('webApp', []);
+    function WebappCtrl($scope) {
+        $scope.user_file = document.getElementById("input_file").value;
+        $scope.user_kgs = '';
+        $scope.user_gokifu = '';
+        //$scope.questionare = new StyleQuestionare();
+        //$scope.player = $scope.questionare.make_new('player', 0);
+        
+        $scope.setFile = function (element){
+            $scope.$apply(function($scope) {
+                    $scope.user_file = element.files[0];
+                });
+        };
+    }
+    </script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    
+    <style>
+    .alert-small {
+    padding: 5px;
+    }; 
+    </style>
+    <title>GoStyle Web App</title>
+</head>
+<body>
+<div class='container' ng-controller="WebappCtrl">
+<div class="row">
+    <div class="col-md-10">
+        <div class="page-header">
+            <h1>GoStyle Web App</h1>
+        </div>
+        <p class="lead">
+        </p>
+        <p class="alert alert-danger">
+        The site has been archived, and the webap is no longer available.
+        If You dare, You can check the <a href="https://github.com/jmoudrik/gostyle">Source Code</a>.
+        </p>
+        <p>
+        The games were processed using sophisticated machine-learning algorithms, please
+        have a look at <a href="/#research">the research section of our homepage</a> if you want
+        to learn more.
+        </p>
+        <h4>Example Output</h4>
+        <p>
+        You can have look at the following example results, for the following KGS players:
+        <ul>
+        <li>
+        <a href='http://gostyle.j2m.cz/WAPP_RES/9b84b71d-12ab-4f50-814b-f1ab0d744fcf/'>
+        pachi
+        </a> &#8212; the <a href='http://pachi.or.cz'>Go playing bot</a>
+        </li>
+        <li>
+        <a href='http://gostyle.j2m.cz/WAPP_RES/d4f6a731-1d1d-4550-90fb-f486818d4cd5/'>
+        bronislav
+        </a> &#8212; me :-)
+        </li>
+        </ul>
+        </p>
+        
+        <h3>Privacy</h3>
+        <p class="alert alert-info">
+        By submitting any data, you agree that we can make further use of it.
+        All the data we publish (here or in any future papers)
+        will be anonymized, which means that no information about any particular user will be
+        published, or ever given to a third party.
+        </p>
+        
+        <!--
+        <h3>Lets try it then!</h3>
+        <div class="well">
+        <form name="form_submit" class="form-inline" method="POST" enctype="multipart/form-data" action="/webapp-w/submit">
+        <ol>
+        <li>
+        <label for="input_file">Upload an archive (zip, rar, tar, bzip2, gzip, ..., archive size limit is 0.5 MB)
+        with .sgf games of one player.
+        </label>
+        <br />
+        <label for="input_file">
+        Around <b>40 games</b> (on 19 &times; 19 goban, no handicap stones) should suffice:
+        </label>
+        <br />
+        <input id="input_file" name='user_file' class="input-medium" type='file' onchange="angular.element(this).scope().setFile(this)" />
+        <small>The <a href="http://www.red-bean.com/sgf/">sgf files</a> should have the name field (PW, PB) filled (in most cases, this is done).
+        The player of interest is considered to be the one whose name appears most times.
+        We only use at most 40 games from the archive, you can upload slightly more, in case some of them were not
+        readable, had handicap stones, or were skipped for whatever reason.
+        </small>
+        <br />
+        </li>
+        <br />
+        <li>
+        <label for="input_kgs">Or, specify your <a href='http://www.gokgs.com'>KGS</a> nickname and we will download some of your latest games for you:</label>
+        <br />
+        <input id="input_kgs" name='user_kgs'  class="input-medium" type='text' ng-model='user_kgs' placeholder='KGS nick' />
+        <span ng-show="user_kgs && user_file" class='alert alert-danger alert-small' >This field is ignored, since you chose to upload an archive.</span>
+        <br />
+        <small>Be patient, fetching the KGS archives might take some time since we want to be nice about KGS's quota.</small>
+        </li>
+        </ol>
+        <br />
+        <b>You should also have a HTML5 browser such as Google Chrome, Opera or Mozilla Firefox</b>
+        <br />
+        <br />
+        <input ng-disabled="!(user_file || user_kgs || user_gokifu)" class='btn btn-primary active' type='submit' value='Proceed!' />
+        </form>
+        </div>
+    
+        <hr>
+          
+        <h3>News</h3>
+        <p>
+        Have been moved to <a href="/">the GoStyle homepage</a>.
+        </p>
+        -->
+        
+        <!--
+        
+        <ul>
+        <li>
+        <b>6.1.2013</b> &ndash; I've done a facelift to make the stuff here nicer and smartphone friendlier.
+        I have also improved clarity of the texts.
+        </li>
+        <li>
+        <b>20.12.2013</b> &ndash; Major extension, added study material (Go books) recommendations. I also improved the KGS support.
+        </li>
+        <li>
+        <b>27.5.2013</b> &ndash; I published the styles of the selected professionals we feed to the algorithms, have a look at
+        <a href="/#research">the research section of our homepage</a>!
+        The app also seems to be pretty stable now. :-)
+        </li>
+        <li>
+        <b>22.4.2013</b> &ndash; Some more fixes and improvements.
+        </li>
+        <li>
+        <b>21.4.2013</b> &ndash; Still having some problems with stability, please be patient.
+        </li>
+        <li>
+        <b>19.4.2013</b> &ndash; We have also made some changes to make the app faster.
+        </li>
+        <li>
+        <b>19.4.2013</b> &ndash; Due to the load caused by the amount of requests, we have experienced some problems in the past two days.
+        <b>Update:</b> the cause of the problems is mainly fixed now.
+        </li>
+        <li>
+        <b>13.4.2013</b> &ndash; Public launch.
+        </li>
+        </ul>
+        </p>
+        -->
+    </div> <!-- End of left COL -->
+
+    <div class="col-md-2"> <!-- Start of right COL -->
+        <br />
+        <center>
+        <img src='./empty_triangle.png'
+        alt='A Go figure with empty triangle.'
+        class="img-responsive"
+        width="120"
+        height="133"
+        title='Gotcha! An empty triangle.' />
+        </center>
+            
+    </div><!-- End of right COL -->
+    
+</div><!-- End of ROW -->
+    
+    <!-- FOOTER -->
+    <hr />
+    <footer>
+    <p>
+       2013-2016, <a href='http://www.j2m.cz/~jm'>Josef Moudřík</a>, as a part of the <a href='/'>GoStyle Project</a>.
+       Uses the <a href='http://pachi.or.cz'>Pachi Go Bot</a> for pattern extraction.
+    </p>
+    </footer>
+</div> <!-- End of container -->
+    
+</body>
+</html>

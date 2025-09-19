@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html ng-app='myApp'>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<script type="text/javascript" src="/libs/angular.min.js"></script>
+<!--
+<script type="text/javascript" src="./libs/jquery.min.js"></script>
+<script type="text/javascript" src="./libs/jquery.tools.min.js"></script>
+
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+-->
+<script type="text/javascript" src="/libs/underscore.min.js"></script>
+
+<script type="text/javascript" src="/style_questionare.js"></script>
+<script type="text/javascript" src="/questionare.js"></script>
+
+<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" media='screen' />
+
+<title>GoStyle Questionnaire</title>
+
+</head>
+<body>
+<div class='row-fluid' ng-controller="QuestionareCtrl">
+<div class="span10 offset1">
+
+<div class="page-header">
+    <h1>GoStyle <small>(Questionnaire)</small></h1>
+</div>
+<p>This is a questionnaire for the <a href='/'>GoStyle project</a>. The purpose of this questionnaire is to collect data about well-known Pro Go Players. The primary uses of this data are:</p>
+<ul>
+    <li>to provide reliable training data for the project</li>
+    <li>make the data (Anonymized) available to the Go community</li>
+</ul>
+
+<h2 id='privacy'>Privacy</h2>
+<p>All data that will be a result of this questionnaire will be published only in anonymized manner. This means, that no information about a particular interviewee will be published.</p>
+<p>The interviewee may though be so glad and specify his name at the end of this questionnaire, which will allow us to explicitly cite and acknowledge his contribution.</p>
+
+
+<h2>Questionnaire Instructions</h2>
+<p>
+The questionnaire contains a list of some well-known go players. For each of the players, we ask you to assess the player's style on four different scales, reaching from 1 to 10.
+</p>
+<ul >
+    <li ng-repeat="key in questionare.keys">
+    <b>{{questionare.long_names[key]}}</b> scale - reaching from highly <b>{{questionare.left[key]}}</b> style (number {{questionare.bound_left[key]}}) to highly <b>{{questionare.right[key]}}</b> style (number {{questionare.bound_right[key]}})</li>
+</ul>
+
+<!--
+Apart from this scale, you might wish to add some other tags for the player, in the case that you think that there is some characteristic typical for the player. You can do this underneath the part where you enter the information about styles. <b>Note</b>, please, that in contrast with the style scales, these tags are only "binary" - this means that these tags do not have an assigned numerical value saying "how much is this true", these tags are simply true or false.
+-->
+
+<p>
+Underneath each of the player names, you can choose whether to skip the player, or not. Feel free to skip the player if you are not familiar with his play or if you get bored.
+</p>
+
+<p>
+We are humbly asking you to fill all the data thoughtfully and honestly. Names in each subset are sorted alphabeticaly. Taking the questionare might take <b>5 to 15 minutes</b>, depending on what players you choose to fill.
+</p>
+<hr />
+
+    <h2 id='quest_start' style="background:#88f;">The Questionnaire</h2>
+    <!--
+    PLAYER START
+
+    -->
+    <div ng-show="current_grouplist != undefined">
+	<h3 style='text-decoration:underline' ng-show="current_index != -1">{{current_grouplist.name}}</h3>
+	<div ng-repeat="player in current_grouplist.list" style="background : #ccc; padding : 5px ; margin-bottom:10px">
+		<h3 style='color:#393 ; padding-left:10px' id="player{{player['id']}}">{{player['name']}}</h3>
+        <label class='radio inline'>
+            <i class='icon-remove'></i>
+        <input name="include_group-{{player['id']}}" type="radio" ng-model="player['skip']" value="yes" />
+		I am not very familiar with this player, skip him/her.<br />
+        </label>
+        <br />
+
+        <label class='radio inline'>
+            <i class='icon-ok'></i>  
+        <input name="include_group-{{player['id']}}" type="radio" ng-model="player['skip']" value="no" />
+		I know the style of this player quite well.
+        </label>
+        <br />
+        <br />
+	<!--<div style="display : {{showThisStyle(player)}}">-->
+	<div ng-show="player['skip'] == 'no'" >
+	      <span ng-show="! areAllStylesSelected(player)" class='text-error'>
+		    Please, select a value for each of the styles below!
+	      </span>
+	    <br />
+	    <table class='table table-striped'>
+    
+		    <!--remove this row if the domain of the questions is not the same. you have to uncomment the {{radio_id}} below-->
+		    <tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td ng-repeat="radio_id in questionare.bound_range[questionare.keys[0]]" >
+			    {{radio_id}}
+			</td>
+			<td></td>
+		    </tr>
+		    <tr ng-repeat="key in questionare.keys">
+		      <td><b>{{questionare.long_names[key]}}</b></td>
+		      <td>
+			  <i class='icon-exclamation-sign' ng-show="player['style'][key] == ''"></i>
+		      </td>
+		      <td><b>{{questionare.left[key]}}</b></td>
+		      <td ng-repeat="radio_id in questionare.bound_range[key]" >
+			  <label class='radio inline' >
+			      <input name="radio-style-{{key}}-{{player['id']}}"
+				  type="radio"
+				  ng-model="player['style'][key]"
+				  value={{radio_id}} />
+			  </label>
+		      </td>
+		      <td><b>{{questionare.right[key]}}</b></td>
+		    </tr>
+	    </table>
+        </div>
+	</div>
+    </div>
+            <!--
+            <br />
+			Are you missing some imporant characteristics of the player?<br />
+			Please be so glad and add as many tags separated by commas as you like!
+			<br />
+			<b>Example:</b> <em>flexible, myoshu</em><br />
+            <b><i class='icon-tags'></i> Tags: </b><input type="text" ng-model="player['tags']" placeholder="Enter the tags here!" />
+            -->
+	
+    <div ng-show="current_index != -1">
+	<span ng-show='group_lists.length == 0'>
+	    <span ng-show="status == ''">
+	       The questionnaire is loading, wait a minute...
+	    </span>
+	    <span ng-show="status != ''" class='text-error'>
+		{{status}}
+	    </span>
+	</span>    
+    </div>
+
+    <div ng-show="notAllPlayersFilled()">
+        <h3 id='not-all-warn'>Warning</h3>
+        <div class='text-warning'> 
+        Some players that were checked as well known are not filled entirely. You can continue if you want to, though they will be skipped:
+        <ul>
+            <li ng-repeat='player in not_skipped_not_filled '>
+            <a href="#player{{player['id']}}">{{player['name']}}</a></li>
+        </ul>
+        </div>
+    </div>
+
+<hr />
+    
+<div ng-show="current_index != -1">
+    <form name='btn' class="form-inline" >
+	<button class='btn' ng-click='next_group()' ng-disabled='group_lists.length == 0'  >
+	    <i class=''></i>
+	    {{next_btn_text}}
+	</button>
+    </form >
+</div>
+
+<div ng-show="current_index == -1">
+<h3>Finalize</h3>
+<p>
+    If you are missing some important pro-player in the list above, we will be happy if you add him to the questionnaire. Just fill in his/her name and click the button!
+</p>
+    <form name='form' class="form-inline">
+        <input class="input-medium" type='text' name='playername' ng-model='new_name'
+        placeholder="Enter the name here!" name-nonempty name-uniq />
+    <button class='btn' ng-click='addNewPlayer()' ng-disabled="form.$invalid || new_name == ''">
+        Add the player!
+    </button>
+    <span ng-show="form.playername.$error.nameUniq" class='text-error'>This player is already in the Questionnaire!</span>
+    </form>
+
+
+
+
+<!--
+<hr />
+<h3>Submit</h3>
+-->
+<!--<p>Finally, you </p>-->
+
+    <form name="form_submit" class="form-inline">
+    <label>
+        You may enter your name (Optional but helpful, <a href='#privacy'>see Privacy</a>):
+        <input class="input-medium" type='text' name='intervi_name' ng-model='intervi_name' placeholder='Your name goes here!' />
+    </label>
+    <br />
+    <label>
+    Now, please enter your strength <span class='text-error'>(Required)</span>:
+    <select name="select_str" ng-model="intervi_str" ng-options="obj.value as obj.text for obj in strength_list" str-nonempty required ></select>
+    </label>
+        <p>Finally, you can send us some feedback if you want to. This might include tips for some other scales, critique, or whatever you like! Please let us know what do you think:</p>
+        <textarea rows="3" placeholder='Place for your feedback...' ng-model='intervi_feedback'></textarea>
+    <br />
+    <br />
+
+    <div ng-show="form_submit.$invalid" class='text-error'>
+        Please declare your strength before submitting!
+    </div>
+    <div ng-show="not_skipped_not_filled.length != 0" class='text-warning'>
+        Please consider filling all styles for the players marked as known. See the <a href="#not-all-warn">Warning</a>.
+    </div>
+
+    <button class='btn' ng-click='submit()' ng-disabled="form_submit.$invalid">
+        <i class='icon-ok'></i>
+    Submit the Questionare!
+    </button>
+    <span ng-show="submit_error != ''" class='text-error'>{{submit_error}}</span>
+
+    </form>
+<!--
+    <hr />
+	<div ng-repeat="player in players">
+        {{player}}
+    </div>
+    -->
+</div>
+</div>
+</div>
+</div>
+
+<div class="row-fluid">
+<div class="span10 offset1">
+      <hr>
+
+      <div class="footer">
+       <p>
+       <small>
+       2013, <a href='http://www.j2m.cz/~jm'>Josef Moudřík</a>, as a part of the <a href='/'>GoStyle Project</a>.
+       </small>
+       </p>
+      </div>
+</div>
+</div>
+</body>
+</html>

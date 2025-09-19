@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html ng-app='webApp'>
+<head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+    <script type="text/javascript" src="./check_status.js"></script>
+
+    <title>GoStyle Web App</title>
+
+    <style>
+    .alert{
+    padding: 5px;
+    }; 
+    </style>
+</head>
+<body>
+<div class="container" ng-controller="CheckCtrl">
+    <div class="page-header">
+        <h2>GoStyle Web App <small>(check status)</small></h2>
+    </div>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Ad 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6962335191296235"
+     data-ad-slot="4919822108"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<hr>
+    
+    <p>Job ID: <b>{{id}}</b></p>
+    <p>Current state: <b ng-class='state_class'>{{state}} {{'.'.repeat(check_count % 5)}}</b></p>
+
+    <p> 
+    <span ng-show="pending_for > 120" class='alert alert-danger'>
+        Hmmm, it seems that the job is pending lot longer than it usually does, we are sorry.
+        The server might be overloaded. Feel free to close the window (and try again later),
+        if you do not feel like waiting..</span>
+    </p> 
+
+    <p ng-class='state_class'>{{result}}</p>
+
+    <p>
+    <span ng-show="state == 'FAILURE'">
+        If you think that this is not your mistake, please try again later.
+    </span>
+    </p>
+
+
+    
+</div>
+</body>
+</html>

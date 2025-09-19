@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html ng-app='webApp' lang='en'>
+<head>
+    <meta charset="utf-8">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+
+
+    <script type="text/javascript" src="/style_questionare.js"></script>
+
+    <script type="text/javascript">
+    var app = angular.module('webApp', []);
+
+    function WebappCtrl($scope, $http, $window) {
+        $scope.questionare = new StyleQuestionare();
+        $scope.strength_list = str_list_kgs();
+        
+        $scope.show_games = false;
+        $scope.res = {"task_id": "d4f6a731-1d1d-4550-90fb-f486818d4cd5", "distant_pros": [["Honinbo Dosaku", "http://ps.waltheri.net/database.html#/player/Honinbo Dosaku"], ["Honinbo Shuwa", "http://ps.waltheri.net/database.html#/player/Honinbo Shuwa"], ["Yamashita Keigo", "http://ps.waltheri.net/database.html#/player/Yamashita Keigo"], ["Miyazawa Goro", "http://ps.waltheri.net/database.html#/player/Miyazawa Goro"]], "name_in_games": "bronislav", "style_unreliable": false, "th": {"pic": "2a7c00097b.png", "sigma": 1.48, "val": 4.9153552055358887}, "similar_pros": [["Chen Yaoye", "http://ps.waltheri.net/database.html#/player/Chen Yaoye"], ["Cho U", "http://ps.waltheri.net/database.html#/player/Cho U"], ["Yi Ch'ang-ho", "http://ps.waltheri.net/database.html#/player/Yi Ch'ang-ho"], ["Yoda Norimoto", "http://ps.waltheri.net/database.html#/player/Yoda Norimoto"]], "sample_size": 40, "ag": {"pic": "f716586b94.png", "sigma": 1.4199999999999999, "val": 5.8817071914672852}, "str": {"pic": "2af954e2a4.png", "sigma": 2.6299999999999999, "val": "2k"}, "unreliable": false, "te": {"pic": "700bab2ed2.png", "sigma": 1.4299999999999999, "val": 7.1088857650756836}, "or": {"pic": "da7e6caa08.png", "sigma": 1.6299999999999999, "val": 5.1553525924682617}};
+        
+        /*$scope.res = {
+         'te' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'or' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'ag' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'th' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'str' : { 'val': '11', 'sigma' : 1.2, 'pic': 'out.png'},
+         'similar_pros' : [ 'Sakata Eio', 'Gu Li' ],
+         'distant_pros' : [ 'Honinbo Shusaku' ],
+         'sample_size' : 10,
+         'style_unreliable' : true,
+         'task_id' : '',
+         'name_in_games' : 'bronislav',
+        }*/
+        
+        $scope.player = $scope.questionare.make_new('', 0);
+        $scope.player['str'] = '';
+        $scope.player['feedback'] = '';
+        $scope.player['task_id'] = $scope.res['task_id'];
+        $scope.submit_error ='';
+        
+        $scope.submit = function(){
+        // yep!
+        $http({
+            method: 'POST',
+            url: '/webapp-w/submit-correction',
+            data: angular.toJson($scope.player),
+            headers:"a {'Content-Type': 'application/json'} "
+        }).success(function(){
+            $window.location = '/thanks_for_time.html';
+        }).error(function(){
+            $scope.submit_error = 'We are sorry, an error occured during submitting the correction. Please try again later.';
+        });
+        }
+        
+        $scope.get_q = function (name){
+        var q = name + ' go game collection';
+        return q.replace(/ /g,"+")
+        }
+    }
+    </script>
+
+    <title>GoStyle Web App - results</title>
+
+</head>
+<body>
+<div class='container' ng-controller="WebappCtrl">
+<div class="page-header">
+    <h1>GoStyle WebApp <small>(results)</small></h1>
+</div>
+    <p> We analyzed a total of <b>{{res['sample_size']}}</b> games, of player <b>{{res['name_in_games']}}</b>, spanning from September 2013 to January 2014.
+
+    <div class='alert alert-danger' ng-show="res['unreliable']">
+    <span class='glyphicon glyphicon-fire'></span>
+    Hmm, <b>{{res['sample_size']}}</b> games is not very much and the results are thus not reliable, try to upload at least 20 games.
+    Ideally, you should upload 30-40 games.
+    </div>
+
+    </p>
+
+    <p><small>
+    <a href='' ng-click="show_games=true" ng-show='! show_games'>Show the games</a>
+    <a href='' ng-click="show_games=false" ng-show='show_games'>Hide the games</a>
+    </small></p>
+    
+    <div class="row">
+    <div ng-show='show_games' class="col-md-8 col-md-offset-1">
+    <table class='table table-striped table-condensed'>
+<tr>
+<td>
+<b>
+#
+</b>
+</td>
+<td>
+<b>
+
+</b>
+</td>
+<td>
+<b>
+Black
+</b>
+</td>
+<td>
+<b>
+
+</b>
+</td>
+<td>
+<b>
+White
+</b>
+</td>
+<td>
+<b>
+Date
+</b>
+</td>
+<td>
+<b>
+Setup
+</b>
+</td>
+<td>
+<b>
+Result
+</b>
+</td>
+</tr>
+<tr>
+<td>
+1
+</td><td>
+
+</td><td>
+upon116 [3k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [3k]
+</b>
+</td><td>
+2013-09-05
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+1.50
+</td>
+</tr>
+<tr>
+<td>
+2
+</td><td>
+
+</td><td>
+upon116 [3k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [3k]
+</b>
+</td><td>
+2013-09-05
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+20.50
+</td>
+</tr>
+<tr>
+<td>
+3
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [3k]
+</b>
+</td><td>
+
+</td><td>
+Hench [3k]
+</td><td>
+2013-09-06
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+4
+</td><td>
+
+</td><td>
+tyty [4k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [3k]
+</b>
+</td><td>
+2013-09-07
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+5
+</td><td>
+
+</td><td>
+<b>
+gopaly2013 [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [3k]
+</td><td>
+2013-09-08
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+6
+</td><td>
+
+</td><td>
+marco01 [3k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [3k]
+</b>
+</td><td>
+2013-09-09
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+7
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [3k]
+</b>
+</td><td>
+
+</td><td>
+takeuchi [3k]
+</td><td>
+2013-09-11
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+22.50
+</td>
+</tr>
+<tr>
+<td>
+8
+</td><td>
+
+</td><td>
+<b>
+nakared [2k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-09-12
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+9
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+yichun83 [2k]
+</td><td>
+2013-09-13
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+10
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+ueda9565 [2k]
+</td><td>
+2013-09-14
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+9.50
+</td>
+</tr>
+<tr>
+<td>
+11
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+
+</td><td>
+<b>
+ohohoh
+</b>
+</td><td>
+2013-09-16
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+12
+</td><td>
+
+</td><td>
+<b>
+kagawa1852 [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-09-19
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+18.50
+</td>
+</tr>
+<tr>
+<td>
+13
+</td><td>
+
+</td><td>
+ueda9565 [2k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+2013-09-24
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+15.50
+</td>
+</tr>
+<tr>
+<td>
+14
+</td><td>
+
+</td><td>
+<b>
+jit222 [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-09-25
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+3.50
+</td>
+</tr>
+<tr>
+<td>
+15
+</td><td>
+
+</td><td>
+<b>
+c123581321 [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-09-25
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+16
+</td><td>
+
+</td><td>
+<b>
+a0330 [2k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-09-25
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+5.50
+</td>
+</tr>
+<tr>
+<td>
+17
+</td><td>
+
+</td><td>
+tanaka [2k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+2013-09-27
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+18
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+
+</td><td>
+<b>
+akishio [2k]
+</b>
+</td><td>
+2013-10-03
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+21.50
+</td>
+</tr>
+<tr>
+<td>
+19
+</td><td>
+
+</td><td>
+<b>
+fnakabc [2k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-10-03
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+17.50
+</td>
+</tr>
+<tr>
+<td>
+20
+</td><td>
+
+</td><td>
+<b>
+hroba4ok [2k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-10-04
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Time
+</td>
+</tr>
+<tr>
+<td>
+21
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+
+</td><td>
+<b>
+AKFF22 [2k]
+</b>
+</td><td>
+2013-10-16
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+22
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+sanpo02 [2k]
+</td><td>
+2013-10-17
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+5.50
+</td>
+</tr>
+<tr>
+<td>
+23
+</td><td>
+
+</td><td>
+<b>
+hgfj [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-10-17
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+20.50
+</td>
+</tr>
+<tr>
+<td>
+24
+</td><td>
+
+</td><td>
+tripitaka [4k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+2013-10-21
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+W+18.50
+</td>
+</tr>
+<tr>
+<td>
+25
+</td><td>
+
+</td><td>
+meke70 [3k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+2013-10-22
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+26
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+hiyas [2k]
+</td><td>
+2013-10-24
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Time
+</td>
+</tr>
+<tr>
+<td>
+27
+</td><td>
+
+</td><td>
+<b>
+greens2715 [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-10-25
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+28
+</td><td>
+
+</td><td>
+kalevipoeg [5k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+2013-10-25
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+29
+</td><td>
+
+</td><td>
+<b>
+hutian [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-10-29
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+30
+</td><td>
+
+</td><td>
+<b>
+timelabo [2k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-10-29
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+31
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+ewinn [3k]
+</td><td>
+2013-11-01
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+6.50
+</td>
+</tr>
+<tr>
+<td>
+32
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+
+</td><td>
+<b>
+makoto12 [2k]
+</b>
+</td><td>
+2013-11-06
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+W+11.50
+</td>
+</tr>
+<tr>
+<td>
+33
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+jimny [2k]
+</td><td>
+2013-11-06
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+7.50
+</td>
+</tr>
+<tr>
+<td>
+34
+</td><td>
+
+</td><td>
+<b>
+chunggam [3k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-11-06
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+3.50
+</td>
+</tr>
+<tr>
+<td>
+35
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+Backins [2k]
+</td><td>
+2013-11-07
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Resign
+</td>
+</tr>
+<tr>
+<td>
+36
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+LaSoaz1 [2k]
+</td><td>
+2013-11-09
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+1.50
+</td>
+</tr>
+<tr>
+<td>
+37
+</td><td>
+
+</td><td>
+<b>
+Maestro10 [2k]
+</b>
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+bronislav [2k]
+</td><td>
+2013-12-20
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Time
+</td>
+</tr>
+<tr>
+<td>
+38
+</td><td>
+
+</td><td>
+AlterIgo3 [3k]
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+2013-12-20
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+W+Resign
+</td>
+</tr>
+<tr>
+<td>
+39
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+gurifon55 [1k]
+</td><td>
+2013-12-26
+</td><td>
+19&times;19 Komi 0.50
+</td><td>
+B+3.50
+</td>
+</tr>
+<tr>
+<td>
+40
+</td><td>
+<span class="glyphicon glyphicon-arrow-right"></span>
+</td><td>
+<b>
+bronislav [2k]
+</b>
+</td><td>
+
+</td><td>
+austen [2k]
+</td><td>
+2014-01-01
+</td><td>
+19&times;19 Komi 6.50
+</td><td>
+B+Resign
+</td>
+</tr>
+</table>
+    <p><span class="glyphicon glyphicon-eye-open"></span> <small>The bold player is the victor in particular games, the player
+	we analyzed is marked by an arrow (and is always the same).</small></p>
+    </div>
+    </div>
+    
+    <p> Based on the patterns and other information extracted from the moves played, we estimated
+    your strength and playing style. If you want to learn more about the methodology, please see
+    <a href="/#research">the research section of the homepage</a>.  Below, we give you the results:
+    <ul>
+        <li> <a href="#strength"> strength</a>,</li>
+        <li> <a href="#style">
+            playing style and tips for possibly interesting proffesional players</a>, </li>
+
+        <li> <a href="#recommendations">
+        recommended study materials 
+        </a> </li>
+    
+        <li> and <a href="#concepts">
+    direct advice on some important concepts</a>. </li>
+    </ul>
+    
+    Please keep in mind, that the stuff here may be wrong and it is not  &ndash; yet :-) &ndash; a substitute for a teacher you can interact with.
+    We will keep this result webpage for at least <b>2 months</b> (before deleting it).</p>
+    
+      <hr>
+
+    <!-- STRENGTH -->
+    <h2 id='strength'> Strength </h2>
+    <p> The <a href='http://senseis.xmp.net/?RankWorldwideComparison'>KGS equivalent</a> of strength of the player: <b>{{res['str']['val']}} &plusmn; {{res['str']['sigma']}}</b> </p>
+    <p>
+    The following image shows the strength (<span style="color:red">red line</span>)
+    with 68% confidence interval (<span style="color:blue">blue line</span>). The
+    confidence is accurate only when the sample is large enough.
+    <br />
+    <img src="{{res['str']['pic']}}"
+	 alt="Strength: {{res['str']['val']}} &plusmn; {{res['str']['sigma']}}"
+	 title="Strength: {{res['str']['val']}} &plusmn; {{res['str']['sigma']}}"
+	 />
+    </p>
+
+    <!-- STYLE -->
+    
+    <h2 id='style'> Style </h2>
+    <div class='text-error' ng-show="res['style_unreliable']">Please bear in mind, that
+	the style information is not very reliable for weaker players, it might be completely off.
+	<br />
+	<br />
+    </div>
+    <table class='table table-striped table-condensed'>
+    <tr ng-repeat="key in questionare.keys">
+      <td><b>{{questionare.long_names[key]}}</b></td>
+      <td width='50'></td>
+      
+      <td><b>{{questionare.left[key]}}</b></td>
+      <td align='center'>
+	<img
+	src="{{res[key]['pic']}}"
+	alt="{{questionare.long_names[key]}}: {{res[key]['val']}} &plusmn; {{res[key]['sigma']}}"
+	title="{{questionare.long_names[key]}}: {{res[key]['val']}} &plusmn; {{res[key]['sigma']}}"
+	>
+      </td>
+      <td><b>{{questionare.right[key]}}</b></td>
+    </tr>
+    </table>
+    <p>
+    Based on this style evaluation, we recommend to review games of the
+    following professional players. We list both proffesional players
+    who have similar style as you and whose style is very different.
+    The first group might serve to improve your style, the second
+    to give inspiration what other styles of play are possible.
+    </p>
+    
+    <p>Professionals who have similar style as you:
+    <ul>
+    <li ng-repeat="pro_pair in res['similar_pros']">
+    <a href="{{pro_pair[1]}}">{{pro_pair[0]}}</a>
+    </li>
+    </ul>
+    </p>
+    <p>Professionals whose style is farthest from yours:
+    <ul>
+    <li ng-repeat="pro_pair in res['distant_pros']">
+    <a href="{{pro_pair[1]}}">{{pro_pair[0]}}</a>
+    </li>
+    </ul>
+    </p>
+    
+    <!-- RECOMMEND -->
+    <h2 id='recommendations'> Study material recommendations </h2>
+    <p>
+    This section lists study materials we believe are relevant for your improvement.
+    The list is constructed by computing a suitability measure, which
+    takes into account your strength and style. The measure is expressed as estimated
+    percentual match.
+    </p>
+    <p>
+    <span class='glyphicon glyphicon-eye-open'></span> Please note, that this is a sort
+    of advertisment (which we hope will provide a source of income
+    allowing further extensions of the site).
+    </p>
+    
+<p>Generally speaking, we recommend either harder books of <a href="http://shop.gogameguru.com/go-books/go-books-level/intermediate-go-books/?acc=aab3238922bcc25a6f606eb525ffdc56">Intermediate</a> level
+or easier books of <a href="http://shop.gogameguru.com/go-books/go-books-level/advanced-go-books/?acc=aab3238922bcc25a6f606eb525ffdc56">Advanced</a> level. More detailed tips follow.</p>
+        
+<h4>Series</h4>
+<p>We find the following <b>series</b> of books to be suitable: <ul>
+<li>79% &#8212; <a href="http://shop.gogameguru.com/go-books/go-book-series/get-strong-at-go-series/?acc=aab3238922bcc25a6f606eb525ffdc56">Get Strong at Go</a></li>
+<li>64% (slightly easier) &#8212; <a href="http://shop.gogameguru.com/go-books/go-book-series/elementary-go-series/?acc=aab3238922bcc25a6f606eb525ffdc56">Elementary Go</a></li>
+</ul></p>
+<h4>Books</h4>
+<p>Apart from the series, we recommend the following single <b>books</b>: <ul>
+<li>40% (easier) &#8212; <a href="http://shop.gogameguru.com/opening-theory-made-easy/?acc=aab3238922bcc25a6f606eb525ffdc56">Opening Theory Made Easy</a></li>
+<li>37% (harder) &#8212; <a href="http://shop.gogameguru.com/vital-points-and-skillful-finesse-for-sabaki/?acc=aab3238922bcc25a6f606eb525ffdc56">Vital Points and Skillful Finesse for Sabaki</a></li>
+<li>30% (easier) &#8212; <a href="http://shop.gogameguru.com/lessons-in-the-fundamentals-of-go/?acc=aab3238922bcc25a6f606eb525ffdc56">Lessons in the Fundamentals of Go</a></li>
+</ul></p>
+    
+    <!-- DISTINCTIVE -->
+
+    <h2 id='concepts'> Distinctive patterns and tips </h2>
+    <h4>Bad things you play</h4>
+        <p><table class='table table-striped'>
+        
+        <tr>
+       <td colspan="2">
+        
+        We found out, that you really like to capture stones. This is not necessarily
+        a bad thing, but are you always sure, that the stones you captured are important
+        and the mere 6 points you get for capturing them is the best move on board?
+        (E.g. in the opening, ...)
+         
+       </td>
+        </tr>
+        
+
+        <tr>
+       <td colspan="1">
+         <img src='/STR_PATT/f0(s:159).png'></td><td style="vertical-align:middle">
+        You seem to <a href='http://senseis.xmp.net/?PushingFromBehind'>push from behind</a> a lot.
+        You should realize, that this allows the opponent to hane at the head of your stones...
+         
+       </td>
+        </tr>
+        
+</table></p>
+
+        <h4>Other notable stuff</h4>
+        <p>
+        The following table shows some typical patterns that stronger players play more than you (on average).
+        The scales on the right show the relative frequency of the moves: "The move is played
+        every Xth game.". The strong players are on the left, weak on the right,
+        your frequency estimated from the sample is the red bar.
+        </p>
+        <p>
+        You can get some inspiration here! ;-) Do not take this too seriously, though...
+        </p>
+        
+        <table class='table table-striped table-condensed'>
+
+        <tr>
+       <td>
+       <img src='/STR_PATT/f0(s:4677).png'>
+       </td>
+       <td style="vertical-align:middle">
+       <img src='3cf7cf.png'>
+       </td>
+        </tr>
+       
+
+        <tr>
+       <td>
+       <img src='/STR_PATT/f0(s:4676).png'>
+       </td>
+       <td style="vertical-align:middle">
+       <img src='c59e0e.png'>
+       </td>
+        </tr>
+       
+
+        <tr>
+       <td>
+       <img src='/STR_PATT/f0(s:528).png'>
+       </td>
+       <td style="vertical-align:middle">
+       <img src='754fc3.png'>
+       </td>
+        </tr>
+       
+
+        <tr>
+       <td>
+       <img src='/STR_PATT/f0(s:642).png'>
+       </td>
+       <td style="vertical-align:middle">
+       <img src='fc9a30.png'>
+       </td>
+        </tr>
+       
+
+        <tr>
+       <td>
+       <img src='/STR_PATT/f0(s:8).png'>
+       </td>
+       <td style="vertical-align:middle">
+       <img src='f96467.png'>
+       </td>
+        </tr>
+       
+</table></p>
+    
+
+    <!-- YOU LIKE ? -->
+    <br />
+    <hr>
+    <h2> Do you like this app? Please, tell your friends! </h2>
+
+
+    <!-- FEEDBACK -->
+    <hr>
+    <h2> Your feedback </h2>
+    <p> <b>Is greatly welcome.</b> Do you think that your strength is different or 
+    your playing style is estimated wrongly? </p>
+    <p>You can help us to improve this application, by submitting correct information about you!!</p>
+    
+    <form name="form_submit" class="form-inline">
+    <label>
+    Please enter your KGS strength:
+    <select name="select_str" ng-model="player['str']" ng-options="obj.value as obj.text for obj in strength_list"></select>
+    </label>
+    <br />
+    <small>
+    If unsure what your KGS strength equivalent is, see <a href='http://senseis.xmp.net/?RankWorldwideComparison'>the rank comparison</a>.
+    </small>
+    <br />
+    <br />
+    And fill in what you consider to be your style:
+	<table class='table table-striped'>
+
+		<!--remove this row if the domain of the questions is not the same. you have to uncomment the {{radio_id}} below-->
+		<tr>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td ng-repeat="radio_id in questionare.bound_range[questionare.keys[0]]" >
+			{{radio_id}}
+		    </td>
+		    <td></td>
+		</tr>
+		<tr ng-repeat="key in questionare.keys">
+		  <td><b>{{questionare.long_names[key]}}</b></td>
+		  <td>
+		      <span class='glyphicon glyphicon-exclamation-sign' ng-show="player['style'][key] == ''"></span>
+		  </td>
+		  <td><b>{{questionare.left[key]}}</b></td>
+		  <td ng-repeat="radio_id in questionare.bound_range[key]" >
+		      <label class='radio inline' >
+			  <input name="radio-style-{{key}}-{{player['id']}}"
+			      type="radio"
+			      ng-model="player['style'][key]"
+			      value={{radio_id}} />
+		      </label>
+		  </td>
+		  <td><b>{{questionare.right[key]}}</b></td>
+		</tr>
+	</table>
+	
+        <p>Finally, you can send us some feedback if you want to. Tips, praise :-), etc..</p>
+        <textarea rows="3" placeholder='Place for your feedback...' ng-model="player['feedback']"></textarea>
+    
+    <br />
+    <br />
+    <button class='btn' ng-click='submit()'>
+    <span class='glyphicon glyphicon-ok'></span>
+    Submit the Correction!
+    </button>
+    <span ng-show="submit_error != ''" class='text-error'>{{submit_error}}</span>
+    <br />
+    <br />
+    <br />
+    <br />
+    </form>
+    
+    <!-- FOOTER -->
+      <hr>
+
+    <footer>
+    <p>
+       2013-2014, <a href='http://www.j2m.cz/~jm'>Josef Moudřík</a>, as a part of the <a href='/'>GoStyle Project</a>.
+       Uses the <a href='http://pachi.or.cz'>Pachi Go Bot</a> for pattern extraction.
+    </p>
+    </footer>
+</div>
+</body>
+</html>

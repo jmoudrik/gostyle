@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+
+<title>GoStyle</title>
+
+</head>
+<body>
+<div class="container">
+<div class="row">
+    <div class="col-md-8">
+    <div class="page-header">
+        <h1>GoStyle Project</h1>
+    </div>
+    
+    <p class="lead">The aim of the project is to investigate the possibilities of computer analysis of
+    databases of <a href='http://en.wikipedia.org/wiki/Go_%28game%29'>Go game</a>
+    (Baduk, Weichi) records using <b>computer data-mining algorithms</b>.
+    <p>
+    
+    
+    <!-- APPS -->
+    <h3>What is here for players?</h3>
+    <p>
+        <a href='/webapp.html' class="btn btn-primary active">GoStyle Web App</a> is a web application which analyzes your Go game records, determines your playing style, strength, and gives various study hints,
+        including a list of relevant professional players to review and book recommendations.
+    </p>
+    
+    <!-- RESEARCH -->
+    <h3 id="research">Research publications and online materials</h3>
+    <!--
+    <p>
+   
+    <ul>
+        <li>help with the initial setting of a player's rating, either on real-world tournaments, or on online Go servers,</li>
+        <li>improve the balancing of the strength of Computer Go programs,</li>
+        <li>provide for teaching recommendations based on the pattern and style analysis,</li>
+        <li>of help people to understand the traditionally perceived styles deeper.</li>
+    </ul>
+    </p>
+    -->
+    <ul>
+        <li>
+		Paper about <b>machine learning</b> part of our methodology:
+		<br >
+		Evolving Non-linear Stacking Ensembles for Prediction of Go Player Attributes, will be published in Proceedings of IEEE SSCI, 2015.<br >
+		Pre-print is available from <a href="http://arxiv.org/abs/1512.09254">arXiv:1512.09254</a>. Or have a look on the <a href="/FILES/2015_ssci_pres.pdf">SSCI presentation</a>.
+        </li>
+        <li>
+		Paper about <b>feature extraction</b> part of our methodology. If you want to cite us, <b>please cite this paper!</b>
+		<br />
+		<a href='http://dx.doi.org/10.1109/CIG.2015.7317909'>Evaluating Go game records for prediction of player attributes</a>, Proceedings of IEEE CIG, 2015.
+		<br />
+		Pre-print can also be found on <a href="http://arxiv.org/abs/1512.08969">arXiv:1512.08969</a>.
+        </li>
+        <li>
+        <a href='/questionare.html'>Style Questionnaire</a>
+        &ndash;
+        If you are a <b>strong player</b>, you can help us by assessing the playing style of selected professionals.
+        </li>
+        
+        <li>
+        <a href='/FILES/style_consensus_27-05-2013.pdf' >Results of the Style Questionnaire</a> (pdf), compiled 27. May 2013 &#8212;
+        we asked some experts (strong amateur players or professionals) to determine style of selected top ranked professionals (see the questionnaire
+        right above).
+        We use this data to feed the algorithms in the <a href='/webapp.html' >GoStyle Web App</a>.
+        </li>
+        
+        <li>
+        Evaluation of the Go Game Records
+        &ndash;
+        Presentation given at the <a href="http://egc2013.go.art.pl/">European Go Congress 2013</a> Science Conference,
+        you can have a look at the <a href='/FILES/2013-07-egc_presentation.pdf'>slides</a>.
+        </li>
+        
+        <li>
+		My Master thesis <a href='http://www.j2m.cz/~jm/master_thesis.pdf' >Meta-learning methods for analyzing Go playing trends (pdf)</a>
+        gives a thorough view of the whole subject.
+        </li>
+        
+        </li>
+        <li>You can also have a look on our ancient <a href='http://pasky.or.cz/go/patmine.pdf'>slideshow summary</a>,
+        and the original <a href='http://arxiv.org/abs/1209.5251'>paper</a> which laid the basis of the methodology we use today.
+        Or just browse the (old) <a href='http://repo.or.cz/w/gostyle.git'>source code</a>.</li>
+    </ul>
+    
+    <!-- ABOUT -->
+    <aside>
+    <h3>About and Contact</h3>
+    <p>
+    <a href='http://www.j2m.cz/~jm'>Josef Moudřík</a> works on this project together with <a href='http://pasky.or.cz/'>Petr Baudiš</a>.
+    <br />
+    You can reach me by e-mail: <b>J.Moudrik@gmail.com</b>
+    </p>
+    <p>
+    The GoStyle project uses the wonderful <a href="http://pachi.or.cz">Pachi
+    Go Playing Bot</a> to extract the patterns and the <a
+    href='http://orange.biolab.si/'>Orange data mining toolkit</a> for
+    the machine learning tasks. 
+    </p>
+    </aside>
+    </div>
+
+    <div class="col-md-4">
+    <br />
+    <center>
+    <img src='./empty_triangle.png'
+    alt='A Go figure with empty triangle.'
+    class="img-responsive"
+    width="120"
+    height="133"
+    title='Gotcha! An empty triangle.' />
+    <h3>What is new here?</h3>
+    </center>
+    
+        <p>
+        
+        <ul>
+        <li>
+        <b>4.2.2016</b> &ndash; Upgraded the server, this should fix occasional "Server Error" problems.
+        </li>
+        <li>
+        <b>15.1.2016</b> &ndash; 
+	Added a <a href="http://jmoudrik.github.io/post/2016/01/15/convolutional_neural_net_for_Go_strength_prediction.html">blogbost about CNN for predicting strength</a>.
+This is very exciting as it might improve the webapp accuracies
+		a lot while potentially requiring smaller game sample. Stay tuned!
+        </li>
+        <li>
+        <b>11.1.2016</b> &ndash; 
+	Updated the <a href='#research'>Research Section</a>.
+        </li>
+        <li>
+        <b>7.1.2014</b> &ndash; 
+        Web App: Recommendation of professional player now links directly to the database of games of the pro,
+        using <a href='http://ps.waltheri.net/'>Waltheri's go pattern search</a>.
+        </li>
+        <li>
+        <b>6.1.2014</b> &ndash; I've done a facelift to make the stuff here nicer and smartphone friendly.
+        I have also improved clarity of the texts.
+        </li>
+        <li>
+        <b>4.1.2014</b> &ndash; Added online (html) versions of our papers.
+        </li>
+        <li>
+        <b>20.12.2013</b> &ndash; Major extension, added study material (Go books) recommendations to the Web App. I also improved KGS support.
+        </li>
+        <li>
+        <b>27.5.2013</b> &ndash; I published the styles of the selected professionals we feed to the algorithms as a standalone document.
+        See the <a href='#research'>Research Section</a>.
+        </li>
+        <li>
+        <b>13.4.2013</b> &ndash; Public launch of the project web, the Web App and also the questionnaire.
+        </li>
+        </ul>
+        </p>
+    </div> <!-- End of left COL -->
+
+</div>
+    
+    <!-- FOOTER -->
+    <hr />
+    <footer>
+    <p> 2013-2016, <a href='/'>GoStyle</a> project. </p>
+    </footer>
+
+</div>
+</body>
+
+</html>
