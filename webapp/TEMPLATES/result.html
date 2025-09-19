@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html ng-app='webApp' lang='en'>
+<head>
+    <meta charset="utf-8">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.7/angular.min.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+
+
+    <script type="text/javascript" src="/style_questionare.js"></script>
+
+    <script type="text/javascript">
+    var app = angular.module('webApp', []);
+
+    function WebappCtrl($scope, $http, $window) {
+        $scope.questionare = new StyleQuestionare();
+        $scope.strength_list = str_list_kgs();
+        
+        $scope.show_games = false;
+        $scope.res = $SUB_res;
+        
+        /*$scope.res = {
+         'te' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'or' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'ag' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'th' : { 'val': '1', 'sigma' : 1.2, 'pic': 'out2.png'},
+         'str' : { 'val': '11', 'sigma' : 1.2, 'pic': 'out.png'},
+         'similar_pros' : [ 'Sakata Eio', 'Gu Li' ],
+         'distant_pros' : [ 'Honinbo Shusaku' ],
+         'sample_size' : 10,
+         'style_unreliable' : true,
+         'task_id' : '',
+         'name_in_games' : 'bronislav',
+        }*/
+        
+        $scope.player = $scope.questionare.make_new('', 0);
+        $scope.player['str'] = '';
+        $scope.player['feedback'] = '';
+        $scope.player['task_id'] = $scope.res['task_id'];
+        $scope.submit_error ='';
+        
+        $scope.submit = function(){
+        // yep!
+        $http({
+            method: 'POST',
+            url: '/webapp-w/submit-correction',
+            data: angular.toJson($scope.player),
+            headers:"a {'Content-Type': 'application/json'} "
+        }).success(function(){
+            $window.location = '/thanks_for_time.html';
+        }).error(function(){
+            $scope.submit_error = 'We are sorry, an error occured during submitting the correction. Please try again later.';
+        });
+        }
+        
+        $scope.get_q = function (name){
+        var q = name + ' go game collection';
+        return q.replace(/ /g,"+")
+        }
+    }
+    </script>
+
+    <title>GoStyle Web App - results</title>
+
+</head>
+<body>
+<div class='container' ng-controller="WebappCtrl">
+<div class="page-header">
+    <h1>GoStyle Web App <small>(results)</small></h1>
+</div>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Ad 1 -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-6962335191296235"
+     data-ad-slot="4919822108"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+    
+<hr>
+    <p> We analyzed a total of <b>{{res['sample_size']}}</b> games, of player <b>{{res['name_in_games']}}</b>$SUB_kgs_timespan.
+
+    <div class='alert alert-danger' ng-show="res['unreliable']">
+    <span class='glyphicon glyphicon-fire'></span>
+    Hmm, <b>{{res['sample_size']}}</b> games is not very much and the results are thus not reliable, try to upload at least 20 games.
+    Ideally, you should upload 30-40 games.
+    </div>
+
+    </p>
+
+    <p><small>
+    <a href='' ng-click="show_games=true" ng-show='! show_games'>Show the games</a>
+    <a href='' ng-click="show_games=false" ng-show='show_games'>Hide the games</a>
+    </small></p>
+    
+    <div class="row">
+    <div ng-show='show_games' class="col-md-8 col-md-offset-1">
+    $SUB_games
+    <p><span class="glyphicon glyphicon-eye-open"></span> <small>The bold player is the victor in particular games, the player
+	we analyzed is marked by an arrow (and is always the same).</small></p>
+    </div>
+    </div>
+    
+    <p> Based on the patterns and other information extracted from the moves played, we estimated
+    your strength and playing style. If you want to learn more about the methodology, please see
+    <a href="/#research">the research section of the homepage</a>.  Below, we give you the results:
+    <ul>
+        <li> <a href="#strength"> strength</a>,</li>
+        <li> <a href="#style">
+            playing style and tips for possibly interesting proffesional players</a>, </li>
+
+        <li> <a href="#recommendations">
+        recommended study materials 
+        </a> </li>
+    
+        <li> and <a href="#concepts">
+    direct advice on some important concepts</a>. </li>
+    </ul>
+    
+    Please keep in mind, that the stuff here may be wrong and it is not  &ndash; yet :-) &ndash; a substitute for a teacher you can interact with.
+    We will keep this result webpage for at least <b>2 months</b> (before deleting it).</p>
+    
+      <hr>
+
+    <!-- STRENGTH -->
+    <h2 id='strength'> Strength </h2>
+    <p> The <a href='http://senseis.xmp.net/?RankWorldwideComparison'>KGS equivalent</a> of strength of the player: <b>{{res['str']['val']}} &plusmn; {{res['str']['sigma']}}</b> </p>
+    <p>
+    The following image shows the strength (<span style="color:red">red line</span>)
+    with 68% confidence interval (<span style="color:blue">blue line</span>). The
+    confidence is accurate only when the sample is large enough.
+    <br />
+    <img src="{{res['str']['pic']}}"
+	 alt="Strength: {{res['str']['val']}} &plusmn; {{res['str']['sigma']}}"
+	 title="Strength: {{res['str']['val']}} &plusmn; {{res['str']['sigma']}}"
+	 />
+    </p>
+
+    <!-- STYLE -->
+    
+    <h2 id='style'> Style </h2>
+    <div class='text-error' ng-show="res['style_unreliable']">Please bear in mind, that
+	the style information is not very reliable for weaker players, it might be completely off.
+	<br />
+	<br />
+    </div>
+    <table class='table table-striped table-condensed'>
+    <tr ng-repeat="key in questionare.keys">
+      <td><b>{{questionare.long_names[key]}}</b></td>
+      <td width='50'></td>
+      
+      <td><b>{{questionare.left[key]}}</b></td>
+      <td align='center'>
+	<img
+	src="{{res[key]['pic']}}"
+	alt="{{questionare.long_names[key]}}: {{res[key]['val']}} &plusmn; {{res[key]['sigma']}}"
+	title="{{questionare.long_names[key]}}: {{res[key]['val']}} &plusmn; {{res[key]['sigma']}}"
+	>
+      </td>
+      <td><b>{{questionare.right[key]}}</b></td>
+    </tr>
+    </table>
+    <p>
+    Based on this style evaluation, we recommend to review games of the
+    following professional players. We list both proffesional players
+    who have similar style as you and whose style is very different.
+    The first group might serve to improve your style, the second
+    to give inspiration what other styles of play are possible.
+    </p>
+    
+    <p>Professionals who have similar style as you:
+    <ul>
+    <li ng-repeat="pro_pair in res['similar_pros']">
+    <a href="{{pro_pair[1]}}">{{pro_pair[0]}}</a>
+    </li>
+    </ul>
+    </p>
+    <p>Professionals whose style is farthest from yours:
+    <ul>
+    <li ng-repeat="pro_pair in res['distant_pros']">
+    <a href="{{pro_pair[1]}}">{{pro_pair[0]}}</a>
+    </li>
+    </ul>
+    </p>
+    
+    <!-- RECOMMEND -->
+    <h2 id='recommendations'> Study material recommendations </h2>
+    <p>
+    This section lists study materials we believe are relevant for your improvement.
+    The list is constructed by computing a suitability measure, which
+    takes into account your strength and style. The measure is expressed as estimated
+    percentual match. Brought to you in cooperation with <a href="http://www.gogameguru.com">GoGameGuru</a>.
+    </p>
+    <!--
+    <p>
+    <span class='glyphicon glyphicon-eye-open'></span> Please note, that this is a sort
+    of advertisment (which we hope will provide a source of income
+    allowing further extensions of the site).
+    </p>
+    -->
+    $SUB_recommendations
+    
+    <!-- DISTINCTIVE -->
+
+    <h2 id='concepts'> Distinctive patterns and tips </h2>
+    $SUB_str_pat
+    
+
+    <!-- YOU LIKE ? -->
+    <br />
+    <hr>
+    <h2> Do you like this app? Please, tell your friends! </h2>
+
+
+    <!-- FEEDBACK -->
+    <hr>
+    <h2> Your feedback </h2>
+    <p> <b>Is greatly welcome.</b> Do you think that your strength is different or 
+    your playing style is estimated wrongly? </p>
+    <p>You can help us to improve this application, by submitting correct information about you!!</p>
+    
+    <form name="form_submit" class="form-inline">
+    <label>
+    Please enter your KGS strength:
+    <select name="select_str" ng-model="player['str']" ng-options="obj.value as obj.text for obj in strength_list"></select>
+    </label>
+    <br />
+    <small>
+    If unsure what your KGS strength equivalent is, see <a href='http://senseis.xmp.net/?RankWorldwideComparison'>the rank comparison</a>.
+    </small>
+    <br />
+    <br />
+    And fill in what you consider to be your style:
+	<table class='table table-striped'>
+
+		<!--remove this row if the domain of the questions is not the same. you have to uncomment the {{radio_id}} below-->
+		<tr>
+		    <td></td>
+		    <td></td>
+		    <td></td>
+		    <td ng-repeat="radio_id in questionare.bound_range[questionare.keys[0]]" >
+			{{radio_id}}
+		    </td>
+		    <td></td>
+		</tr>
+		<tr ng-repeat="key in questionare.keys">
+		  <td><b>{{questionare.long_names[key]}}</b></td>
+		  <td>
+		      <span class='glyphicon glyphicon-exclamation-sign' ng-show="player['style'][key] == ''"></span>
+		  </td>
+		  <td><b>{{questionare.left[key]}}</b></td>
+		  <td ng-repeat="radio_id in questionare.bound_range[key]" >
+		      <label class='radio inline' >
+			  <input name="radio-style-{{key}}-{{player['id']}}"
+			      type="radio"
+			      ng-model="player['style'][key]"
+			      value={{radio_id}} />
+		      </label>
+		  </td>
+		  <td><b>{{questionare.right[key]}}</b></td>
+		</tr>
+	</table>
+	
+        <p>Finally, you can send us some feedback if you want to. Tips, praise :-), etc..</p>
+        <textarea rows="3" placeholder='Place for your feedback...' ng-model="player['feedback']"></textarea>
+    
+    <br />
+    <br />
+    <button class='btn' ng-click='submit()'>
+    <span class='glyphicon glyphicon-ok'></span>
+    Submit the Correction!
+    </button>
+    <span ng-show="submit_error != ''" class='text-error'>{{submit_error}}</span>
+    <br />
+    <br />
+    <br />
+    <br />
+    </form>
+    
+    <!-- FOOTER -->
+      <hr>
+
+    <footer>
+    <p>
+       2013-2014, <a href='http://www.j2m.cz/~jm'>Josef Moudřík</a>, as a part of the <a href='/'>GoStyle Project</a>.
+       Uses the <a href='http://pachi.or.cz'>Pachi Go Bot</a> for pattern extraction.
+    </p>
+    </footer>
+</div>
+</body>
+</html>
